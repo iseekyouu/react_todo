@@ -5,75 +5,163 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-class Square extends React.Component {
-    constructor(props) {
+class TodoForm extends React.Component{
+   /*constructor(props){
         super(props);
+        this.state = this.props.list;
+    }*/
+    handleChange(name){
+        return(
+            (event) =>
+                this.props.onChange(this.props.index, name, event)
+        )
+    }
+
+    renderFormTextInput(name){
+        return(
+            <input
+                type ='text'
+                value={this.props.list[name]}
+                onChange={
+                    this.handleChange(name)
+                }
+            />
+        );
+    }
+
+    renderFormTextarea(name){
+        return(
+            <textarea
+                value={this.props.list[name]}
+                onChange={
+                    this.handleChange(name)
+                }
+            ></textarea>
+        );
+    }
+
+    renderFormSelect(name){
+        return(
+            <select
+                value={this.props.list[name]}
+                onChange={
+                    this.handleChange(name)
+                }
+            >
+                <option value="0">low</option>
+                <option value="1">mid</option>
+                <option value="2">high</option>
+            </select>
+        );
+    }
+
+    renderFormDateInput(name){
+        return(
+            <input
+                type="date"
+                value={this.props.list[name]}
+                onChange={
+                    this.handleChange(name)
+                }
+            />
+        );
+    }
+
+    render(){
+        return(
+            <div>
+                {this.renderFormTextInput('name')}
+                {this.renderFormTextarea('descr')}
+                {this.renderFormSelect('priority')}
+                {this.renderFormDateInput('deadline')}
+                {this.renderFormDateInput('enddate')}
+
+            </div>
+        )
+    }
+}
+
+
+class Game extends React.Component {
+    constructor(){
+        super();
         this.state = {
-            value: null
+            list: [
+                {
+                    name: 'hello',
+                    descr: 'description',
+                    priority: 1,
+                    deadline:'2018-01-19',
+                    enddate: new Date()
+                }
+
+            ],
+            currentIndex: 0
         }
     }
 
-    render() {
-        return (
-            <button className="square" onClick={ () => {
-                    console.log(this);
-                    debugger;
-                    return this.setState({value: 'X'})
-                }
-            }>
-                {this.state.value}
-            </button>
-        );
-    }
-}
 
-class Board extends React.Component {
-    renderSquare(i) {
-        return <Square value={i}/>;
-    }
 
     render() {
-        const status = 'Next player: X';
+        const list = this.state.list.map((item, index) => {
+            return (<li
+                key={index}
+                onClick={this.setCurrentIndex.bind(this, index)}
+            >
+                {item.name}
+            </li>);
+        });
 
+        const index = this.state.currentIndex;
         return (
-            <div>
-                <div className="status">{status}</div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
-        );
-    }
-}
-
-class Game extends React.Component {
-    render() {
-        return (
-            <div className="game">
-                <div className="game-board">
-                    <Board />
+            <div className="todo">
+                <div className="todo-board">
+                    <button type="button"
+                        onClick={this.handleAdd.bind(this)}
+                    >Add</button>
+                    <TodoForm
+                        list={this.state.list[index]}
+                        index={index}
+                        onChange={this.handleChange.bind(this)}
+                    />
                 </div>
                 <div className="game-info">
-                    <div>{/* status */}</div>
-                    <ol>{/* TODO */}</ol>
+                    <ol>{list}</ol>
                 </div>
             </div>
         );
     }
-}
 
+    setCurrentIndex(index){
+        this.setState({currentIndex: index})
+    }
+
+    handleAdd(){
+        this.setState(
+            {
+                list: this.state.list.concat(
+                    [{
+                        name: "",
+                        descr: "",
+                        priority: 0,
+                        deadline: new Date(),
+                        enddate: new Date()
+                    }]),
+                currentIndex: ++this.state.currentIndex
+            }
+        )
+    }
+
+    handleChange(index, field, event){
+        const item = this.state.list[index];
+        item[field] = event.target.value;
+        this.state.list[index] = item;
+
+        this.setState({
+            list: this.state.list
+        });
+    }
+}
 // ========================================
 
 ReactDOM.render(
