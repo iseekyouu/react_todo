@@ -4,7 +4,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-
+import { Grid, Row, Col, FormGroup, ControlLabel, FormControl,
+    Checkbox, Button, ButtonGroup, ListGroup, ListGroupItem} from 'react-bootstrap';
 //http://theory.phphtml.net
 
 class TodoForm extends React.Component{
@@ -19,70 +20,136 @@ class TodoForm extends React.Component{
         )
     }
 
-    renderFormTextInput(name){
+
+
+    renderFormTextInput(key){
         return(
-            <input
-                type ='text'
-                value={this.props.list[name]}
+            <FormControl
+                type='text'
+                value={this.props.list[key]}
                 onChange={
-                    this.handleChange(name)
+                    this.handleChange(key)
                 }
             />
         );
     }
 
-    renderFormTextarea(name){
+    renderFormTextarea(key){
         return(
-            <textarea
-                value={this.props.list[name]}
-                onChange={
-                    this.handleChange(name)
-                }
-            ></textarea>
+                <FormControl
+                    componentClass="textarea"
+                    value={this.props.list[key]}
+                    onChange={
+                        this.handleChange(key)
+                    }
+                />
         );
     }
 
-    renderFormSelect(name){
+    renderFormSelect(key){
         return(
-            <select
-                value={this.props.list[name]}
-                onChange={
-                    this.handleChange(name)
-                }
-            >
-                <option value="0">low</option>
-                <option value="1">mid</option>
-                <option value="2">high</option>
-            </select>
+            <FormControl
+                  componentClass="select"
+                  value={this.props.list[key]}
+                  onChange={
+                      this.handleChange(key)
+                  }
+              >
+              <option value="0">low</option>
+              <option value="1">mid</option>
+              <option value="2">high</option>
+            </FormControl>
         );
     }
 
-    renderFormDateInput(name){
+    renderFormDateInput(key){
         return(
-            <input
+            <FormControl
                 type="date"
-                value={this.props.list[name]}
+                value={this.props.list[key]}
                 onChange={
-                    this.handleChange(name)
+                    this.handleChange(key)
                 }
             />
         );
+    }
+
+    renderFormCheckBox(key){
+      return (
+          <Checkbox
+              checked={this.props.list[key]}
+              onChange={
+                    this.handleChange(key)
+                }
+          />
+      )
+    }
+
+    renderFormElement(element){
+        const types = {
+            input: this.renderFormTextInput,
+            textarea: this.renderFormTextarea,
+            select: this.renderFormSelect,
+            date: this.renderFormDateInput,
+            checkbox: this.renderFormCheckBox
+        };
+
+        if (!types[element.type]) return null
+        const handle = types[element.type].bind(this, element.key)();
+
+        const label = element.nolabel ? null : [element].map((el) => {
+            return (<ControlLabel key={el.name}>{el.name}</ControlLabel>)
+          }
+        )
+
+        return (
+            <FormGroup>
+                {label}
+                {handle}
+            </FormGroup>
+        )
     }
 
     render(){
-        return(
-            <div>
-                {this.renderFormTextInput('name')}
-                {this.renderFormTextarea('descr')}
-                {this.renderFormSelect('priority')}
-                {this.renderFormDateInput('deadline')}
-                {this.renderFormDateInput('enddate')}
+        if (!this.props.list) return null
 
-            </div>
+        return(
+            <Grid>
+              <Row>
+                <Col xs={6} md={6}>
+                  <form>
+                      {this.renderFormElement({key: 'name', name: 'Название', type: 'input'})}
+                      {this.renderFormElement({key: 'descr', name: 'Описание', type: 'textarea'})}
+                      {this.renderFormElement({key: 'priority', name: 'Приоритет', type: 'select'})}
+                      {this.renderFormElement({key: 'deadline', name: 'Срок выполнения', type: 'date'})}
+                      {this.renderFormElement({key: 'enddate', name: 'Дата завершения', type: 'date'})}
+                      {this.renderFormElement({key: 'done', name: 'Выполнено', type: 'checkbox'})}
+                  </form>
+                </Col>
+              </Row>
+            </Grid>
         )
     }
 }
+class Filters extends React.Component{
+  render(){
+    return (
+        <Grid>
+          <Row>
+            <Col xs={8} md={8}>
+              <ButtonGroup>
+                <Button>All</Button>
+                <Button>Low</Button>
+                <Button>Mid</Button>
+                <Button>High</Button>
+              </ButtonGroup>
+            </Col>
+          </Row>
+        </Grid>
 
+    )
+  }
+}
 
 class Game extends React.Component {
     constructor(){
@@ -94,23 +161,64 @@ class Game extends React.Component {
                     descr: 'description',
                     priority: 1,
                     deadline:'2018-01-19',
-                    enddate: new Date()
+                    enddate: formatDate(new Date()),
+                    done: 0
                 }
 
             ],
-            currentIndex: 0
+            currentIndex: 0,
+            hideForm: 0
         }
     }
 
-
+    getPriorityName(priority){
+       switch (priority){
+        case 0:
+          return 'low';
+        case 1:
+          return 'mid'
+        case 2:
+          return 'high'
+        default:
+          return 'low'
+      }
+    }
 
     render() {
+        console.log('list render', this, this.state.list, this.state.currentIndex)
+        //const game = this;
         const list = this.state.list.map((item, index) => {
-            return (<li
+            const active = index == this.state.currentIndex ?
+                'active': '';
+            const done = item.done ? 'done' : ''
+            const className = `${active} ${done}`;
+            const priorityName = this.getPriorityName(item.priority)
+            return (
+              <li
                 key={index}
+                className ={className}
                 onClick={this.setCurrentIndex.bind(this, index)}
-            >
-                {item.name}
+              >
+                <dl className="dl-horizontal">
+                  <dt>Название</dt>
+                  <dd>{item.name}</dd>
+                  <dt>Описание</dt>
+                  <dd>{item.descr}</dd>
+                  <dt>Приоритет</dt>
+                  <dd>{priorityName}</dd>
+                  <dt>Срок выполнения</dt>
+                  <dd>{item.deadline}</dd>
+                  <dt>Дата завершения</dt>
+                  <dd>{item.enddate}</dd>
+                  <dt>Удалить</dt>
+                  <dd>
+                    <Button bsStyle="danger"
+                            onClick={(event) => this.handleRemove(this.state.currentIndex, event)}
+                    >
+                      Remove current
+                    </Button>
+                  </dd>
+                </dl>
             </li>);
         });
 
@@ -118,27 +226,68 @@ class Game extends React.Component {
         return (
             <div className="todo">
                 <div className="todo-board">
-                    <button type="button"
-                        onClick={this.handleAdd.bind(this)}
-                    >Add</button>
-                    <TodoForm
-                        list={this.state.list[index]}
-                        index={index}
-                        onChange={this.handleChange.bind(this)}
-                    />
+                    <Grid>
+                      <Row>
+                        <Col xs={8} md={8}>
+                          <Button bsStyle="success"
+                              onClick={this.handleAdd.bind(this)}
+                          >Add
+                          </Button>
+                          <Button bsStyle="success"
+                                  onClick={() =>
+                                  this.setState({hideForm: !this.state.hideForm})}
+                          >Toggle form visibility
+                          </Button>
+                        </Col>
+                      </Row>
+                    </Grid>
+
+                    <Filters />
+
+                    {
+                      !this.state.hideForm ?
+                          <TodoForm
+                            list={this.state.list[index]}
+                            index={index}
+                            onChange={this.handleChange.bind(this)}
+                          /> : null
+                    }
+
                 </div>
-                <div className="game-info">
-                    <ol>{list}</ol>
-                </div>
+                <Grid className="game-info">
+                  <Row>
+                    <Col xs={8} md={8}>
+                      <ol>{list}</ol>
+                    </Col>
+                  </Row>
+                </Grid>
             </div>
         );
     }
 
     setCurrentIndex(index){
+      console.log('!!! set', index)
         this.setState({currentIndex: index})
     }
 
+    handleRemove(index, event) {
+      event.stopPropagation();
+
+      if (!confirm("Are u sure?")) return false;
+
+      this.state.list.splice(index, 1);
+      let newIndex = --this.state.currentIndex;
+      newIndex = index < 0 ? 0 : newIndex;
+
+      this.setState({
+        list: this.state.list,
+        currentIndex: newIndex
+      })
+
+    }
+
     handleAdd(){
+        const index = this.state.list.length ? ++this.state.currentIndex : 0;
         this.setState(
             {
                 list: this.state.list.concat(
@@ -146,17 +295,24 @@ class Game extends React.Component {
                         name: "",
                         descr: "",
                         priority: 0,
-                        deadline: new Date(),
-                        enddate: new Date()
+                        deadline: "",
+                        enddate: "",
+                        done: 0
                     }]),
-                currentIndex: ++this.state.currentIndex
+                currentIndex: index
             }
         )
     }
 
     handleChange(index, field, event){
+        let value;
+        if (field === 'done') {
+          value = event.target.checked ? 1 : 0
+        } else {
+          value = event.target.value
+        }
         const item = this.state.list[index];
-        item[field] = event.target.value;
+        item[field] = value;
         this.state.list[index] = item;
 
         this.setState({
@@ -164,8 +320,14 @@ class Game extends React.Component {
         });
     }
 }
-// ========================================
 
+
+function formatDate(date){
+  return date.toISOString().split('T')[0]
+}
+
+
+// ========================================
 ReactDOM.render(
     <Game />,
     document.getElementById('root')

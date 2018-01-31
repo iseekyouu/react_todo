@@ -46,5 +46,17 @@ ol, ul {
 }
 
 .game-info {
+    margin-top: 20px;
     margin-left: 20px;
+}
+
+.active {
+    padding:2px;
+    background-color: lightblue;
+}
+.done {
+    text-decoration:line-through
+}
+.hidden {
+    display:none;
 }
