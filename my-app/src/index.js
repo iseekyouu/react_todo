@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Grid, Row, Col, FormGroup, ControlLabel, FormControl,
-    Checkbox, Button, ButtonGroup, ListGroup, ListGroupItem} from 'react-bootstrap';
+    Checkbox, Button, ButtonGroup} from 'react-bootstrap';
 //http://theory.phphtml.net
 
 class TodoForm extends React.Component{
@@ -185,10 +185,8 @@ class Game extends React.Component {
     }
 
     render() {
-        console.log('list render', this, this.state.list, this.state.currentIndex)
-        //const game = this;
         const list = this.state.list.map((item, index) => {
-            const active = index == this.state.currentIndex ?
+            const active = index === this.state.currentIndex ?
                 'active': '';
             const done = item.done ? 'done' : ''
             const className = `${active} ${done}`;
@@ -196,7 +194,7 @@ class Game extends React.Component {
             return (
               <li
                 key={index}
-                className ={className}
+                className={className}
                 onClick={this.setCurrentIndex.bind(this, index)}
               >
                 <dl className="dl-horizontal">
@@ -266,8 +264,7 @@ class Game extends React.Component {
     }
 
     setCurrentIndex(index){
-      console.log('!!! set', index)
-        this.setState({currentIndex: index})
+        this.setState({currentIndex: index});
     }
 
     handleRemove(index, event) {
