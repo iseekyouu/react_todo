@@ -60,3 +60,17 @@ ol, ul {
 .hidden {
     display:none;
 }
+
+dl>dd{
+    word-break: break-all;
+}
+
+.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+
+    top: 15px; /* Элемент становится фиксированным сверху на расстоянии в 15px */
+}
+.inline{
+    display:inline-block;
+}
