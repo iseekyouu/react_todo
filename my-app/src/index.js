@@ -82,6 +82,7 @@ class TodoForm extends React.Component{
           />
       )
     }
+  
     /**
      * Form element render, why not, experimental
      * @params element {object: {key:, name:, type:}}
@@ -144,7 +145,7 @@ class Filters extends React.Component{
   }
 }
 
-class Game extends React.Component {
+class Todos extends React.Component {
     constructor(){
       super();
 
@@ -176,6 +177,7 @@ class Game extends React.Component {
             filter: 'all'
         }
     }
+  
     /**
      * Simple function for priority name
      * @params priority {int} code of priority
@@ -263,7 +265,7 @@ class Game extends React.Component {
                       /> : null
                 }
               </Col>
-              <Col xs={6} md={6} className="game-info">
+              <Col xs={6} md={6} className="Todos-info">
                 <ol>{list}</ol>
               </Col>
             </Row>
@@ -318,8 +320,7 @@ class Game extends React.Component {
      * */
     handleAdd(){
         const index = this.state.list.length ? ++this.state.currentIndex : 0;
-        this.setState(
-            {
+        this.setState({
                 list: this.state.list.concat(
                     [{
                         name: "",
@@ -392,8 +393,7 @@ class Game extends React.Component {
 }
 
 // ========================================
-
 ReactDOM.render(
-    <Game />,
+    <Todos />,
     document.getElementById('root')
 );
