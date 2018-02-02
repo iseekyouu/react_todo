@@ -132,7 +132,6 @@ class TodoForm extends React.Component{
 }
 
 class Filters extends React.Component{
-
   render(){
     return (
       <ButtonGroup>
