@@ -14,72 +14,72 @@ class TodoForm extends React.Component{
      * @params key {string} chenged key
      * */
     handleChange(key){
-        return(
-            (event) =>
-                this.props.onChange(this.props.index, key, event)
-        )
+      return(
+        (event) =>
+            this.props.onChange(this.props.index, key, event)
+      )
     }
 
     renderFormTextInput(key){
-        return(
-            <FormControl
-                type='text'
-                value={this.props.list[key]}
-                onChange={
-                    this.handleChange(key)
-                }
-            />
-        );
+      return(
+        <FormControl
+          type='text'
+          value={this.props.list[key]}
+          onChange={
+              this.handleChange(key)
+          }
+        />
+      );
     }
 
     renderFormTextarea(key){
-        return(
-                <FormControl
-                    componentClass="textarea"
-                    value={this.props.list[key]}
-                    onChange={
-                        this.handleChange(key)
-                    }
-                />
-        );
+      return(
+        <FormControl
+          componentClass="textarea"
+          value={this.props.list[key]}
+          onChange={
+              this.handleChange(key)
+          }
+        />
+      );
     }
 
     renderFormSelect(key){
-        return(
-            <FormControl
-                  componentClass="select"
-                  value={this.props.list[key]}
-                  onChange={
-                      this.handleChange(key)
-                  }
-              >
-              <option value="0">low</option>
-              <option value="1">mid</option>
-              <option value="2">high</option>
-            </FormControl>
-        );
+      return(
+        <FormControl
+          componentClass="select"
+          value={this.props.list[key]}
+          onChange={
+              this.handleChange(key)
+          }
+        >
+          <option value="0">low</option>
+          <option value="1">mid</option>
+          <option value="2">high</option>
+        </FormControl>
+      );
     }
 
     renderFormDateInput(key){
-        return(
-            <FormControl
-                type="date"
-                value={this.props.list[key]}
-                onChange={
-                    this.handleChange(key)
-                }
-            />
-        );
+      return(
+        <FormControl
+          type="date"
+          value={this.props.list[key]}
+          onChange={
+              this.handleChange(key)
+          }
+        />
+      );
     }
 
     renderFormCheckBox(key){
       return (
-          <Checkbox
-              checked={this.props.list[key]}
-              onChange={
-                    this.handleChange(key)
-                }
-          />
+        <Checkbox
+          checked={this.props.list[key]}
+          onChange={
+                this.handleChange(key)
+            }
+        />
       )
     }
   
@@ -109,8 +109,8 @@ class TodoForm extends React.Component{
 
         return (
             <FormGroup>
-                {label}
-                {handle}
+              {label}
+              {handle}
             </FormGroup>
         )
     }
@@ -200,7 +200,7 @@ class Todos extends React.Component {
       return (
         this.state.list.map((item, index) => {
         const active = index === this.state.currentIndex ?
-            'active': '';
+            'active' : '';
         const done = item.done ? 'done' : '';
         const className = `${active} ${done}`;
         const priorityName = this.getPriorityName(item.priority);
@@ -209,32 +209,32 @@ class Todos extends React.Component {
 
         if (!this.filter(index)) return false;
           return (
-              <li
-                  key={index}
-                  className={className}
-                  onClick={this.setCurrentIndex.bind(this, index)}
-              >
-                <dl className={this.outOfTime(index)}>
-                  <dt>Название</dt>
-                  <dd>{item.name}</dd>
-                  <dt>Описание</dt>
-                  <dd>{item.descr}</dd>
-                  <dt>Приоритет</dt>
-                  <dd>{priorityName}</dd>
-                  <dt>Срок выполнения</dt>
-                  <dd>{item.deadline}</dd>
-                  <dt>Дата завершения</dt>
-                  <dd>{item.enddate}</dd>
-                  <dt>Удалить</dt>
-                  <dd>
-                    <Button bsStyle="danger"
-                            onClick={(event) => this.handleRemove(index, event)}
-                    >
-                      Remove current
-                    </Button>
-                  </dd>
-                </dl>
-              </li>);
+            <li
+                key={index}
+                className={className}
+                onClick={this.setCurrentIndex.bind(this, index)}
+            >
+              <dl className={this.outOfTime(index)}>
+                <dt>Название</dt>
+                <dd>{item.name}</dd>
+                <dt>Описание</dt>
+                <dd>{item.descr}</dd>
+                <dt>Приоритет</dt>
+                <dd>{priorityName}</dd>
+                <dt>Срок выполнения</dt>
+                <dd>{item.deadline}</dd>
+                <dt>Дата завершения</dt>
+                <dd>{item.enddate}</dd>
+                <dt>Удалить</dt>
+                <dd>
+                  <Button bsStyle="danger"
+                          onClick={(event) => this.handleRemove(index, event)}
+                  >
+                    Remove current
+                  </Button>
+                </dd>
+              </dl>
+            </li>);
         })
       )
     }
@@ -258,11 +258,11 @@ class Todos extends React.Component {
                 <Filters filter={this.setFilter.bind(this)} />
                 {
                   !this.state.hideForm ?
-                      <TodoForm
-                          list={this.state.list[index]}
-                          index={index}
-                          onChange={this.handleChange.bind(this)}
-                      /> : null
+                    <TodoForm
+                        list={this.state.list[index]}
+                        index={index}
+                        onChange={this.handleChange.bind(this)}
+                    /> : null
                 }
               </Col>
               <Col xs={6} md={6} className="Todos-info">
@@ -321,17 +321,17 @@ class Todos extends React.Component {
     handleAdd(){
         const index = this.state.list.length ? ++this.state.currentIndex : 0;
         this.setState({
-                list: this.state.list.concat(
-                    [{
-                        name: "",
-                        descr: "",
-                        priority: 0,
-                        deadline: "",
-                        enddate: "",
-                        done: 0
-                    }]),
-                currentIndex: index
-            }
+            list: this.state.list.concat(
+              [{
+                  name: "",
+                  descr: "",
+                  priority: 0,
+                  deadline: "",
+                  enddate: "",
+                  done: 0
+              }]),
+            currentIndex: index
+          }
         )
     }
 
